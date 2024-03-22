@@ -1,0 +1,57 @@
+import requests
+
+def fetch_event_by_date(date):
+      ”””
+      Function to fetch a historical event for a specific date from the Muffin Labs API.
+      ”””
+      try:
+          # Send a request to the API endpoint for the specified date
+          response = requests.get(f"https://history.muffinlabs.com/date/{date}")
+
+          # Check if the request was successful
+          if response.status_code == 200:
+              # Extract the event data from the response
+              event_data = response.json()['data']['Events'][0]
+              return event_data['year'], event_data['text']
+          else:
+              # Handle unsuccessful request
+              print("Failed to fetch data. Status code:", response.status_code)
+              return None, None
+
+      except Exception as e:
+          # Handle any other exceptions
+          print("An error occurred:", e)
+          return None, None
+
+def display_event(year, event):
+      ”””
+      Function to display the fetched historical event.
+      ”””
+      print(f"Year: {year}")
+      print(f"Event: {event}")
+
+def main():
+     ””” 
+     Main function to continuously fetch and display historical events for specific dates.
+      ”””
+      try:
+          while True:
+              # Get user input for the date
+              date_input = input("Enter the date (MM/DD): ")
+
+              # Fetch event for the specified date
+              event_year, event_text = fetch_event_by_date(date_input)
+
+              if event_year is not None and event_text is not None:
+                  display_event(event_year, event_text)
+              else:
+                  print("Failed to fetch and display the event.")
+
+      except KeyboardInterrupt:
+          print("\nProgram terminated by the user.")
+      
+      except Exception as e:
+          print("An error occurred:", e)
+
+if __name__ == "__main__":
+      main()
